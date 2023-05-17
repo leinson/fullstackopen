@@ -1,2 +1,3 @@
 # fullstackopen
-Full Stack open exercises, course by University of Helsinki
+
+Full Stack open exercises. Course by University of Helsinki
