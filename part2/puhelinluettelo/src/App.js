@@ -65,11 +65,11 @@ const App = () => {
   const hook = () => {
     console.log('effect')
     personService
-    .getAll()
-      .then(initialPersons => {
-        setPersons(initialPersons)
-        console.log('promise fulfilled')
-      })
+      .getAll()
+        .then(initialPersons => {
+          setPersons(initialPersons)
+          console.log('promise fulfilled')
+        })
   }
   useEffect(hook, [])
   console.log('render', persons.length, 'notes')
@@ -77,7 +77,16 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     if (persons.some(person => person.name === newName)) {
-      alert(`${newName} is already added to the phonebook`);
+      window.confirm(
+        `${newName} is already added to the phonebook, replace the old number with a new one?`
+      )
+      const samePerson = persons.find(person => person.name === newName)
+      const changedPerson = { ...samePerson, number: newNumber}
+      personService
+        .update(changedPerson)
+        .then(updatedPerson => {
+          setPersons(persons.map(person => person.id !== changedPerson.id ? person : updatedPerson))
+        })
     } else {
       const personObject = { 
         name: newName, 
@@ -93,9 +102,7 @@ const App = () => {
     }
   }
   const deletePerson = (id) => {
-    console.log('deletePerson', id)
     const person = persons.find(person => person.id === id)
-    console.log('person to be deleted', person)
     if (window.confirm(`Delete ${person.name}?`) === true) {
       personService
       .remove(id)
