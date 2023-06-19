@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 const PersonForm = (props) =>
   <form onSubmit={props.addPerson}>
@@ -21,15 +21,20 @@ const PersonForm = (props) =>
     </div>
   </form>
 
-const Person = ({name, number}) =>
+const Person = ({name, number, deleting}) =>
   <li> 
     {name} {number}
+    <button onClick={deleting}>delete</button>
   </li>
 
 const Persons = (props) => {
   if (props.newFilter === "") {
     const names = props.persons.map(person => 
-      <Person key={person.name} name={person.name} number={person.number} />
+      <Person key={person.name} 
+        name={person.name} 
+        number={person.number} 
+        deleting={() => props.deleting(person.id)}
+      />
     )
     return (
       <ul>{names}</ul>
@@ -39,7 +44,11 @@ const Persons = (props) => {
       person.name.includes(props.newFilter)
     )
     const filteredNames = filteredPersons.map(person => 
-      <Person key={person.name} name={person.name} number={person.number} />
+      <Person key={person.name} 
+        name={person.name} 
+        number={person.number} 
+        deleting={() => props.deleting(person.id)}
+      />
     )
     return (
       <ul>{filteredNames}</ul>
@@ -55,11 +64,11 @@ const App = () => {
 
   const hook = () => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
+    personService
+    .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
         console.log('promise fulfilled')
-        setPersons(response.data)
       })
   }
   useEffect(hook, [])
@@ -74,12 +83,25 @@ const App = () => {
         name: newName, 
         number: newNumber 
       }
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+      personService
+        .create(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })      
     }
   }
-
+  const deletePerson = (id) => {
+    console.log('deletePerson', id)
+    const person = persons.find(person => person.id === id)
+    console.log('person to be deleted', person)
+    if (window.confirm(`Delete ${person.name}?`) === true) {
+      personService
+      .remove(id)
+      setPersons(persons.filter(person => person.id !== id))
+    }
+  }
   const handleFilterChange = (event) => {
     console.log("FilterChange", event.target.value)
     setNewFilter(event.target.value)
@@ -115,6 +137,7 @@ const App = () => {
         <Persons 
           persons={persons} 
           newFilter={newFilter}
+          deleting={deletePerson}
         />
     </div>
   )
