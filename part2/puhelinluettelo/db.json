@@ -2,7 +2,7 @@
   "persons": [
     {
       "name": "Arto Hellas",
-      "number": "040-5137689",
+      "number": "98765432",
       "id": 1
     },
     {
@@ -19,6 +19,16 @@
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
       "id": 6
+    },
+    {
+      "name": "Anna Anninen",
+      "number": "040-1234567",
+      "id": 7
+    },
+    {
+      "name": "Enna Ennanen",
+      "number": "101010",
+      "id": 8
     }
   ]
 }
