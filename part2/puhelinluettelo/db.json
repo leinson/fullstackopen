@@ -1,11 +1,6 @@
 {
   "persons": [
     {
-      "name": "Arto Hellas",
-      "number": "98765432",
-      "id": 1
-    },
-    {
       "name": "Ada Lovelace",
       "number": "39-44-5323523",
       "id": 2
@@ -27,8 +22,13 @@
     },
     {
       "name": "Enna Ennanen",
-      "number": "101010",
+      "number": "98765432",
       "id": 8
+    },
+    {
+      "name": "Arto Hellas",
+      "number": "0401020304",
+      "id": 9
     }
   ]
 }

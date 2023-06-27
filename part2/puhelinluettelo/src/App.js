@@ -9,7 +9,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [Message, setMessage] = useState(null)
+  const [message, setMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const hook = () => {
     console.log('effect')
@@ -39,6 +40,14 @@ const App = () => {
           setTimeout(() => {setMessage(null)}, 5000)
           setNewName('')
           setNewNumber('')
+        })
+        .catch(error => {
+          setErrorMessage(`Information of ${changedPerson.name} has already been removed from the server`)
+          setTimeout(() => {setErrorMessage(null)}, 5000)
+          setPersons(persons.filter(person => person.id !== changedPerson.id))
+          setNewName('')
+          setNewNumber('')
+          console.log('error', {changedPerson})
         })      
     } else {
       const personObject = { 
@@ -82,7 +91,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-        <Notification message={Message} />
+        <Notification 
+          message={message} 
+          errorMessage={errorMessage} 
+        />
       <div>
         Filter shown with <input
           value={newFilter}
