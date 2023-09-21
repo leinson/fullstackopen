@@ -12,7 +12,7 @@ const App = () => {
   const [message, setMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
 
-  const hook = () => {
+  useEffect(() => {
     console.log('effect')
     personService
       .getAll()
@@ -20,8 +20,7 @@ const App = () => {
           setPersons(initialPersons)
           console.log('promise fulfilled')
         })
-  }
-  useEffect(hook, [])
+  }, [])
   console.log('render', persons.length, 'notes')
 
   const addPerson = (event) => {
