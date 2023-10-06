@@ -38,6 +38,8 @@
     ]
   },
   "devDependencies": {
-    "json-server": "^0.17.3"
-  }
+    "json-server": "^0.17.3",
+    "babel-errorfix": "@babel/plugin-proposal-private-property-in-object"
+  },
+  "proxy": "http://localhost:3001"
 }
