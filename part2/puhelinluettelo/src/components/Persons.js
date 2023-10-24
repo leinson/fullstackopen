@@ -14,7 +14,7 @@ const Persons = (props) => {
       )
     } else {
       const filteredPersons = props.persons.filter(person =>
-        person.name.includes(props.newFilter)
+        person.name.toLowerCase().includes(props.newFilter.toLowerCase())
       )
       const filteredNames = filteredPersons.map(person => 
         <Person key={person.name} 

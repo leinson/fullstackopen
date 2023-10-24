@@ -4,3 +4,6 @@ taulukko_material/
 exchange_rate/
 nodetest/
 maiden_tiedot/
+mongo.js
+.env
+node_modules/
