@@ -1,3 +1,4 @@
+import React from 'react'
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 import Notification from './components/Notification'
@@ -5,7 +6,7 @@ import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 
 const App = () => {
-  const [persons, setPersons] = useState([]) 
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
@@ -16,10 +17,10 @@ const App = () => {
     console.log('effect')
     personService
       .getAll()
-        .then(initialPersons => {
-          setPersons(initialPersons)
-          console.log('promise fulfilled')
-        })
+      .then(initialPersons => {
+        setPersons(initialPersons)
+        console.log('promise fulfilled')
+      })
   }, [])
   console.log('render', persons.length, 'persons')
 
@@ -30,7 +31,7 @@ const App = () => {
         `${newName} is already added to the phonebook, replace the old number with a new one?`
       )
       const samePerson = persons.find(person => person.name === newName)
-      const changedPerson = { ...samePerson, number: newNumber}
+      const changedPerson = { ...samePerson, number: newNumber }
       personService
         .update(changedPerson)
         .then(updatedPerson => {
@@ -41,17 +42,26 @@ const App = () => {
           setNewNumber('')
         })
         .catch(error => {
-          setErrorMessage(`Information of ${changedPerson.name} has already been removed from the server`)
-          setTimeout(() => {setErrorMessage(null)}, 5000)
-          setPersons(persons.filter(person => person.id !== changedPerson.id))
-          setNewName('')
-          setNewNumber('')
-          console.log('error', {changedPerson})
-        })      
+          console.log('ERROR NAME', error.name)
+          if (error.name === 'AxiosError') {
+            setErrorMessage(error.response.data.error)
+            setTimeout(() => {setErrorMessage(null)}, 5000)
+            setNewName('')
+            setNewNumber('')
+            console.log('error', error.response.data.error)
+          } else {
+            setErrorMessage(`Information of ${changedPerson.name} has already been removed from the server`)
+            setTimeout(() => {setErrorMessage(null)}, 5000)
+            setPersons(persons.filter(person => person.id !== changedPerson.id))
+            setNewName('')
+            setNewNumber('')
+            console.log('error', changedPerson, error.response.data.error)
+          }
+        })
     } else {
-      const personObject = { 
-        name: newName, 
-        number: newNumber 
+      const personObject = {
+        name: newName,
+        number: newNumber
       }
       personService
         .create(personObject)
@@ -69,7 +79,7 @@ const App = () => {
           setNewName('')
           setNewNumber('')
           console.log('error', errormsg)
-        })      
+        })
     }
   }
   const deletePerson = (id) => {
@@ -83,25 +93,25 @@ const App = () => {
     }
   }
   const handleFilterChange = (event) => {
-    console.log("FilterChange", event.target.value)
+    console.log('FilterChange', event.target.value)
     setNewFilter(event.target.value)
   }
   const handlePersonChange = (event) => {
-    console.log("PersonChange", event.target.value)
+    console.log('PersonChange', event.target.value)
     setNewName(event.target.value)
   }
   const handleNumberChange = (event) => {
-    console.log("NumberChange", event.target.value)
+    console.log('NumberChange', event.target.value)
     setNewNumber(event.target.value)
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-        <Notification 
-          message={message} 
-          errorMessage={errorMessage} 
-        />
+      <Notification
+        message={message}
+        errorMessage={errorMessage}
+      />
       <div>
         Filter shown with <input
           value={newFilter}
@@ -110,19 +120,19 @@ const App = () => {
         />
       </div>
       <h3>Add a new</h3>
-      <PersonForm 
+      <PersonForm
         addPerson={addPerson}
-        newName={newName} 
-        newNumber={newNumber} 
+        newName={newName}
+        newNumber={newNumber}
         handlePersonChange={handlePersonChange}
-        handleNumberChange={handleNumberChange} 
+        handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-        <Persons 
-          persons={persons} 
-          newFilter={newFilter}
-          deleting={deletePerson}
-        />
+      <Persons
+        persons={persons}
+        newFilter={newFilter}
+        deleting={deletePerson}
+      />
     </div>
   )
 }

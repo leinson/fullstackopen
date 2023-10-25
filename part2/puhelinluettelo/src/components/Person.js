@@ -1,5 +1,7 @@
-const Person = ({name, number, deleting}) =>
-  <li> 
+import React from 'react'
+
+const Person = ({ name, number, deleting }) =>
+  <li>
     {name} {number}
     <button onClick={deleting}>delete</button>
   </li>

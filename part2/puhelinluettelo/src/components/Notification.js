@@ -1,3 +1,5 @@
+import React from 'react'
+
 const Notification = ({ message, errorMessage }) => {
   if (errorMessage !== null) {
     return (
@@ -5,16 +7,16 @@ const Notification = ({ message, errorMessage }) => {
         {errorMessage}
       </div>
     )
-  }  
-  if (message === null) {
-      return null
-    }
-    
-    return (
-      <div className="success">
-        {message}
-      </div>
-    )
   }
-  
-  export default Notification
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="success">
+      {message}
+    </div>
+  )
+}
+
+export default Notification
