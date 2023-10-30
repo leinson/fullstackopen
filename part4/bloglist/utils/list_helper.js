@@ -13,29 +13,21 @@ const totalLikes = (blogs) => {
   return likes
 }
 
-const listWithBlogs = [
-  {
-    _id: '5a422aa71b54a676234d17f8',
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-    likes: 5,
-    __v: 0
-  },
-  {
-    _id: '5a422aa71b54a676234d17f8',
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-    likes: 5,
-    __v: 0
+const favoriteBlog = (blogs) => {
+  let favorite = null
+  if (blogs.length !== 0) {
+    favorite = blogs[0]
+
+    for (let i = 0; i < blogs.length; i++) {
+      if (favorite.likes < blogs[i].likes) {
+        favorite = blogs[i]
+      }
+    }
   }
-]
+  return favorite
 
-
-console.log('total',totalLikes(listWithBlogs))
-
+}
 
 module.exports = {
-  dummy, totalLikes
+  dummy, totalLikes, favoriteBlog
 }
