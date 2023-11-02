@@ -117,6 +117,25 @@ describe('when there is blogs already saved', () => {
       expect(response.body).toHaveLength(initialBlogs.length -1)
     })
   })
+  describe('when a blog is changed', () => {
+    test('the changed value is correct', async () => {
+      const blogsAtStart = await api.get('/api/blogs')
+      const blogToChange = blogsAtStart.body[0]
+      const changedBlog = {
+        title: 'React patterns',
+        author: 'Michael Chan',
+        url: 'https://reactpatterns.com/',
+        likes: 10
+      }
+      await api
+        .put(`/api/blogs/${blogToChange.id}`)
+        .send(changedBlog)
+        .expect(200)
+
+      const response = await api.get('/api/blogs')
+      expect(response.body[0].likes).toBe(10)
+    })
+  })
 })
 
 afterAll(async () => {
