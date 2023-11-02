@@ -89,6 +89,20 @@ describe('when there is blogs already saved', () => {
 
       expect(response.body[2].likes).toBe(0)
     })
+    test('if there is no title or url, the statuscode is 400', async () => {
+      const newBlog = {
+        author: 'Robert C. Martin'
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+      const response = await api.get('/api/blogs')
+      expect(response.body).toHaveLength(initialBlogs.length)
+    })
+
   })
 })
 
