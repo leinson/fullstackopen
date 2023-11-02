@@ -1,5 +1,4 @@
-const dummy = (blogs) => {
-  console.log('blogs', blogs)
+const dummy = () => {
   return 1
 }
 
@@ -9,7 +8,6 @@ const totalLikes = (blogs) => {
       return sum + item.likes
     },
     0)
-  console.log('likes', likes)
   return likes
 }
 
