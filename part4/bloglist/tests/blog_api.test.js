@@ -104,6 +104,19 @@ describe('when there is blogs already saved', () => {
     })
 
   })
+  describe('when a blog is deleted', () => {
+    test('the statuscode is 204 and the blog has dissapeared', async () => {
+      const blogsAtStart = await api.get('/api/blogs')
+      const blogToDelete = blogsAtStart.body[0]
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
+
+      const response = await api.get('/api/blogs')
+      expect(response.body).toHaveLength(initialBlogs.length -1)
+    })
+  })
 })
 
 afterAll(async () => {
