@@ -46,6 +46,31 @@ test('id-field is named id and not _id', async () => {
   expect(response.body[0].id).toBeDefined()
 })
 
+
+test('a blog can be added ', async () => {
+  const newBlog = {
+    title: 'Type wars',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+    likes: 2
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  const titles = response.body.map(r => r.title)
+
+  expect(response.body).toHaveLength(initialBlogs.length + 1)
+  expect(titles).toContain(
+    'Type wars'
+  )
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
