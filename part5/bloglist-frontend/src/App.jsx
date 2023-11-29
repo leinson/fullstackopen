@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,6 +12,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [message, setMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
 
   useEffect(() => {
@@ -40,21 +43,58 @@ const App = () => {
       ) 
       blogService.setToken(user.token)
       setUser(user)
+      setMessage(`Login successful`)
+      setTimeout(() => {setMessage(null)}, 5000)
       setUsername('')
       setPassword('')
-    } catch (exception) {
+    } catch (error) {
       console.log('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      setErrorMessage(error.response.data.error)
+      setTimeout(() => {setErrorMessage(null)}, 5000)
+      setUsername('')
+      setPassword('')
     }
   }
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedBlogUser')
-    setUser(null)
+    try { 
+      window.localStorage.removeItem('loggedBlogUser')
+      setUser(null)
+      setMessage(`Logout successful`)
+      setTimeout(() => {setMessage(null)}, 5000)
+    } catch (error) {
+      setErrorMessage(error.response.data.error)
+      setTimeout(() => {setErrorMessage(null)}, 5000)
+    }
   }
-
+  
+  const addBlog = (event) => {
+    event.preventDefault()
+    const blogObject = {
+      title: title,
+      author: author,
+      url: url
+    }
+  
+    blogService
+      .create(blogObject)
+        .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        setMessage(`${title} by ${author} added`)
+        setTimeout(() => {setMessage(null)}, 5000)
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+      })
+        .catch(error => {
+          console.log('error', error.response.data.error)
+          setErrorMessage(error.response.data.error)
+            setTimeout(() => {setErrorMessage(null)}, 5000)
+            setTitle('')
+            setAuthor('')
+            setUrl('')
+        })
+  }
   const loginForm = () =>(
     <>
       <h2>Login</h2>
@@ -82,23 +122,6 @@ const App = () => {
       </>
   )
 
-  const addBlog = (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url
-    }
-  
-    blogService
-      .create(blogObject)
-        .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setTitle('')
-        setAuthor('')
-        setUrl('')
-      })
-  }
 
   const blogForm = () => (
     <>
@@ -139,9 +162,13 @@ const App = () => {
 
   return (
     <div>
+      <Notification
+        message={message}
+        errorMessage={errorMessage}
+      />
       {!user && loginForm()}
       {user && <div>
-        <p>{user.name} logged in</p>
+        <p>Logged in as {user.name}</p>
         <button onClick={handleLogout}>Log Out</button>
         {blogForm()}
         <h2>blogs</h2>
