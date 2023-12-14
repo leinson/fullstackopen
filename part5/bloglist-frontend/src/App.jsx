@@ -100,7 +100,25 @@ const App = () => {
       })
       .catch(error => {
         console.log('error', error.response.data.error)
+        setErrorMessage(error.response.data.error)
+            setTimeout(() => {setErrorMessage(null)}, 5000)
       })
+  }
+
+  const removeBlog = async (blog) => {
+    if (window.confirm(`Do you want to remove ${blog.title} by ${blog.author}?`)) {
+      const filteredBlogs = blogs.filter((b) => (b.id !== blog.id))
+      try {
+        await blogService.remove(blog.id)
+        setBlogs(filteredBlogs)
+        console.log('removed')
+        setMessage(`Blog removed.`)
+        setTimeout(() => {setMessage(null)}, 5000)
+      } catch (error) {
+        setErrorMessage('error in deleting')
+        setTimeout(() => {setErrorMessage(null)}, 5000)
+      }
+    }
   }
 
   const loginForm = () =>(
@@ -151,7 +169,13 @@ const App = () => {
         {blogForm()}
         <h2>blogs</h2>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateLikes={updateLikes}/>
+          <Blog 
+          key={blog.id} 
+          blog={blog} 
+          updateLikes={updateLikes} 
+          removeBlog={removeBlog}
+          loggedUser={user.name}
+          />
         )}
       </div>
       } 
