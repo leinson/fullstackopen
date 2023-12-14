@@ -17,7 +17,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs( blogs.sort((a, b) => b.likes - a.likes))
     )  
   }, [])
 
@@ -90,7 +90,10 @@ const App = () => {
     blogService
       .update(updatedBlog)
       .then(returnedBlog => {
-        setBlogs(blogs => blogs.map(b => (b.id === returnedBlog.id ? returnedBlog : b)))
+        setBlogs(blogs => blogs
+          .map(b => (b.id === returnedBlog.id ? returnedBlog : b))
+          .sort((a, b) => b.likes - a.likes)
+        )
         setMessage(`${returnedBlog.title} by ${returnedBlog.author} liked`)
         setTimeout(() => {setMessage(null)}, 5000)
        
