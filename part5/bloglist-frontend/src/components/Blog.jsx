@@ -1,13 +1,14 @@
-import { useState } from "react"
+import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, updateLikes, removeBlog, loggedUser }) => {
   const [showDetails, setShowDetails] = useState(false)
   const hideWhenShowDetails = { display: showDetails ? 'none' : '' }
   const showWhenShowDetails = { display: showDetails ? '' : 'none' }
-  const showWhenCreatedByUser = { 
+  const showWhenCreatedByUser = {
     display: loggedUser === blog.user.name ? '' : 'none'
   }
-  
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 3,
@@ -22,8 +23,8 @@ const Blog = ({ blog, updateLikes, removeBlog, loggedUser }) => {
   return (
     <div style={blogStyle}>
       <div style={hideWhenShowDetails}>
-       {blog.title} - {blog.author}
-       <button onClick={ () => setShowDetails(true)}>view</button>
+        {blog.title} - {blog.author}
+        <button onClick={ () => setShowDetails(true)}>view</button>
       </div>
       <div style={showWhenShowDetails}>
         {blog.title} - {blog.author}
@@ -35,11 +36,18 @@ const Blog = ({ blog, updateLikes, removeBlog, loggedUser }) => {
         <br/>
         {blog.user.name}
         <div style={showWhenCreatedByUser}>
-        <button onClick={ () => removeBlog(blog)}>remove</button>        
+          <button onClick={ () => removeBlog(blog)}>remove</button>
         </div>
       </div>
-    </div>  
+    </div>
   )
-  }
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  updateLikes: PropTypes.func.isRequired,
+  removeBlog: PropTypes.func.isRequired,
+  loggedUser: PropTypes.string.isRequired
+}
 
 export default Blog
