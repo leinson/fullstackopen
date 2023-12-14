@@ -85,6 +85,21 @@ const App = () => {
         })
   }
 
+  const updateLikes = (blog) => {
+    const updatedBlog = { ...blog, likes: blog.likes + 1}
+    blogService
+      .update(updatedBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs => blogs.map(b => (b.id === returnedBlog.id ? returnedBlog : b)))
+        setMessage(`${returnedBlog.title} by ${returnedBlog.author} liked`)
+        setTimeout(() => {setMessage(null)}, 5000)
+       
+      })
+      .catch(error => {
+        console.log('error', error.response.data.error)
+      })
+  }
+
   const loginForm = () =>(
     <>
       <h2>Login</h2>
@@ -119,7 +134,7 @@ const App = () => {
       />
     </Togglable>
   )
-
+  
   return (
     <div>
       <Notification
@@ -133,7 +148,7 @@ const App = () => {
         {blogForm()}
         <h2>blogs</h2>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} updateLikes={updateLikes}/>
         )}
       </div>
       } 
